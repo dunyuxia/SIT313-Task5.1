@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login page</title>
+    <style>
+        body {
+            background: #f7f7f7;
+        }
+
+        .box {
+            width: 300px;
+            padding: 20px;
+            background-color: beige;
+        }
+
+        span {
+            display: block;
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Login</h1>
+    <div class="box">
+        <p><span>Email：</span><input id="email" type="text"></p>
+        <p><span>password：</span> <input id="pwd" type="password"></p>
+        <button id="btn">Login</button>
+    </div>
+
+    <script src="./javascripts/axios.min.js"></script>
+    <script>
+        let email = document.getElementById('email')
+        let pwd = document.getElementById('pwd')
+        let btn = document.getElementById('btn')
+        let emailRule = /^\w{0,10}\d{0,10}@.{1,10}\..{1,10}/
+
+        btn.onclick = function () {
+            if (email.value == '' || pwd.value == '') {
+                alert('Can not be empey')
+                return
+            }
+
+            if (!emailRule.test(email.value)) {
+                alert('Make sure you enter the correct email address')
+                return
+            }
+
+            let userinfo = {
+                email: email.value,
+                pwd: pwd.value
+            }
+
+            axios.post('/checklogin', userinfo)
+                .then(function (response) {
+                    if (response.data == '404') {
+                        alert('user not exist')
+                    }
+                    if (response.data == '500') {
+                        alert('Password error')
+                    }
+                    if (response.data == '200') {
+                        alert('login success')
+                        window.location.href = `/success?e=${email.value}`
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+    </script>
+</body>
+
+</html>

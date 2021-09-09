@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Registration</title>
+    <style>
+        body {
+            color: #666;
+            font-size: 14px;
+            background-color: #f7f7f7;
+        }
+
+        #select {
+            width: 150px;
+        }
+
+        .short-input {
+            width: 410px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        input {
+            width: 180px;
+        }
+
+        .long-input {
+            width: 400px;
+        }
+
+        .item-btn {
+            margin-top: 10px;
+        }
+        .container {
+            width: 500px;
+            height: auto;
+            margin: auto;
+            background-color: beige;
+            padding: 20px 40px;
+        }
+        h1,h2 {
+            text-align: center;
+        }
+        .star {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Customer Registration</h1>
+    <h2>Create on iService Account</h2>
+    <div class="container">
+        <div class="item">
+            <p>Country of residence<span class="star">*</span></p>
+            <select id="select">
+                <option value="China">China</option>
+                <option value="Eenland">Eenland</option>
+                <option value="America">America</option>
+                <option value="France">France</option>
+            </select>
+        </div>
+
+        <div class="item">
+            <div class="short-input">
+                <div>
+                    <p>First name<span class="star">*</span></p>
+                    <input type="text" id="firstName">
+                </div>
+                <div>
+                    <p>Last name<span class="star">*</span></p>
+                    <input type="text" id="lastName">
+                </div>
+            </div>
+        </div>
+
+        <div class="item">
+            <p>Email<span class="star">*</span></p>
+            <input class="long-input" type="text" id="email">
+        </div>
+
+        <div class="item">
+            <p>Password<span class="star">*</span></p>
+            <input type="text" class="long-input" id="password">
+        </div>
+
+        <div class="item">
+            <p>Confirm password<span class="star">*</span></p>
+            <input type="text" class="long-input" id="cpassword">
+        </div>
+
+        <div class="item">
+            <p>Address<span class="star">*</span></p>
+            <input type="text" class="long-input" id="address">
+        </div>
+
+        <div class="item">
+            <div class="short-input">
+                <div>
+                    <p>City<span class="star">*</span></p>
+                    <input type="text" id="city">
+                </div>
+                <div>
+                    <p>State, Province or Region<span class="star">*</span></p>
+                    <input type="text" id="state">
+                </div>
+            </div>
+        </div>
+
+        <div class="item">
+            <p>ZIP / Postal code</p>
+            <input type="text" class="long-input" id="postalCode">
+        </div>
+
+        <div class="item">
+            <p>Mobile phone number</p>
+            <input type="text" class="long-input" id="phone">
+        </div>
+
+        <div class="item-btn">
+            <button id="btn1">Create Account</button>&nbsp;&nbsp;
+            <a target="_blank" href="/login">to login page</a>&nbsp;&nbsp;
+            <a target="_blank" href="/show">show database</a>
+        </div>
+    </div>
+
+    <script src="./javascripts/axios.min.js"></script>
+    <script>
+        let btn1 = document.getElementById('btn1')
+
+        let emailRule = /^\w{0,10}\d{0,10}@.{1,10}\..{1,10}/
+
+        btn1.onclick = function () {
+            let select = document.getElementById('select').value
+            let firstName = document.getElementById('firstName').value
+            let lastName = document.getElementById('lastName').value
+            let email = document.getElementById('email').value
+            let password = document.getElementById('password').value
+            let cpassword = document.getElementById('cpassword').value
+            let address = document.getElementById('address').value
+            let city = document.getElementById('city').value
+            let state = document.getElementById('state').value
+            let postalCode = document.getElementById('postalCode').value
+            let phone = document.getElementById('phone').value
+
+            if(firstName == '' || lastName == '' || password == '' || address == '' || city == '' || state == '') {
+                alert('Can not be empey')
+                return
+            }
+
+            if(password != cpassword) {
+                alert('Entered passwords differ')
+                return
+            }
+
+            if(!emailRule.test(email)) {
+                alert('Make sure you enter the correct email address')
+                return
+            }
+
+            let userinfo = {
+                select,
+                firstName,
+                lastName,
+                email,
+                password,
+                cpassword,
+                address,
+                city,
+                state,
+                postalCode,
+                phone
+            }
+
+            axios.post('/reg', userinfo)
+                .then(function (response) {
+                    if(response.data == '500') {
+                        console.log(response.data)
+                        alert('This email address has been registered')
+                    }
+                    if(response.data == '200') {
+                        alert('registration success')
+                        window.open('/login')
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
+
+    </script>
+
+</body>
+</html>
